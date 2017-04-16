@@ -87,12 +87,12 @@ export function render(opt) {
     p.position = randomSphere([], random(0, height / 2));
     p.position[0] += width / 2;
     p.position[1] += height / 2;
-    let hei = heightMap[p.position[0] + p.position[1]*width*4];
+    let hei = heightMap[(p.position[0] + p.position[1]*width)*4];
     while(random(0, hei / 255) < 0.1) {
       p.position = randomSphere([], random(0, height / 2));
       p.position[0] += width / 2;
       p.position[1] += height / 2;
-      hei = heightMap[p.position[0] + p.position[1]*width*4];
+      hei = heightMap[(p.position[0] + p.position[1]*width)*4];
     }
     p.radius = random(1, maxRadius);
     p.duration = random(1, 500);

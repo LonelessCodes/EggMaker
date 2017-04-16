@@ -3,35 +3,60 @@ import * as egg from "../json/egg-path.json";
 import { PATTERN_HEIGHT, PATTERN_WIDTH } from "../constants";
 import * as contrast from "wcag-contrast";
 
-import { Config } from "../config";
-export const mapsPromise = Config.mapsPromise;
-export const maps = Config.maps;
-
-// export const stage = new Container; // export an empty container
-
-// create the canvas to draw on
-// currently this is uploading the canvas to the GPU 60 times
-// a second. Not really good. Maybe I don't even need PIXI at all
-// so I could just flexbox this canvas in center in DOM
-// eh
-export const canvas = document.createElement("canvas");
-canvas.width = 790;
-canvas.height = 1000;
-document.getElementById("create").appendChild(canvas); // append canvas to DOM
-const ctx = canvas.getContext("2d");
-
 import { seed } from "../modules/get-seed"; // get seed from url query at pageload
 if (history.pushState) {
   const newurl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
   window.history.pushState({ path: newurl }, "", newurl);
 }
 
+import { Config } from "../config";
+export const mapsPromise = Config.mapsPromise;
+export const maps = Config.maps;
+
 import { render } from "../render";
 
+// the canvas with mask. canvasPart is drawn on here
+const canvas = document.createElement("canvas");
+canvas.width = 790;
+canvas.height = 1000;
+document.getElementById("create").appendChild(canvas); // append canvas to DOM
+
+const seedElem = document.createElement("div");
+seedElem.className = "seed";
+const holder = document.createElement("div");
+holder.className = "holder";
+holder.innerHTML = "<div class=\"header\">Egg Maker</div>";  
+holder.appendChild(seedElem);
+document.getElementById("create").appendChild(holder);
+
+resize();
+function resize() {
+  const ratio = window.innerWidth / window.innerHeight;
+  canvas.style.height = "80vh";
+  canvas.style.width = "initial";
+
+  if (ratio > 1.1) {
+    holder.style.display = "block";
+  } else {
+    holder.style.display = "none";
+
+    if (ratio < 0.8) {
+      canvas.style.height = "initial";
+      canvas.style.width = "80vw";
+    }
+  }
+}
+window.addEventListener("resize", resize);
+
+const ctx = canvas.getContext("2d");
+
+// the heightmap canvas
 const heightMap = document.createElement("canvas");
 heightMap.width = canvas.width;
 heightMap.height = canvas.height;
 const heightCtx = heightMap.getContext("2d");
+
+// the canvas to paint on
 const canvasPart = document.createElement("canvas");
 canvasPart.width = canvas.width;
 canvasPart.height = canvas.height;
@@ -69,8 +94,9 @@ export function start() {
     config.ctx = canvasPartCtx;
     config.backgroundCtx = heightCtx;
 
-    // PIXIrenderer.backgroundColor = hexToDec(getBestContrast(config.palette[0], config.palette.slice(1)));
-    // seedText.textContent = config.seed;
+    document.body.style.background = getBestContrast(config.palette[0], config.palette.slice(1));
+    document.body.style.color = config.palette[0];
+    seedElem.textContent = "Seed " + config.seed;
 
     const renderer = render(config);
 
@@ -82,7 +108,6 @@ export function start() {
           return;
         }
         stepCount++;
-        console.log("Step", stepCount);
         renderer.step(config.interval);
         ctx.drawImage(canvasPart, 0, 0);
       }

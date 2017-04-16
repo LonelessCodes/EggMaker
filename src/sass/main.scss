@@ -19,18 +19,29 @@ body{
   padding: 0;
 }
 
-#stage,
-#stage > canvas,
 #create {
   @extend %full;
   position: absolute;
-}
-#create {
   display: flex;
   align-items: center;
   justify-content: center;
 
   > canvas {
     height: 80%;
+  }
+}
+
+.holder {
+  margin-left: 5vh;
+  font-size: 35px;
+  font-family: "Amatic SC", "Open Sans", Arial, sans-serif;
+  font-weight: 700;
+
+  .header {
+    font-size: 9vh;
+  }
+
+  .seed {
+    font-size: 4vh;
   }
 }
