@@ -3,10 +3,8 @@ export function shuffleArray(arr, randFunc) {
     throw new TypeError("Expected Array, got " + typeof arr);
   }
 
-  var rand;
-  var tmp;
-  var len = arr.length;
-  var ret = arr.slice();
+  let rand, tmp, len = arr.length;
+  const ret = arr.slice();
 
   while (len) {
     rand = Math.floor(randFunc() * len--);
@@ -33,4 +31,11 @@ export function randomRange(randFunc) {
     }
     return lerp(min, max, randFunc());
   };
+}
+
+export function hexToDec(input) {
+  const m = input.match(/^#([0-9a-f]{6})$/i)[1];
+  if (m) {
+    return parseInt(m.substr(0, 6), 16);
+  }
 }

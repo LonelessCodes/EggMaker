@@ -5,6 +5,7 @@ const clone = require("gulp-clone");
 const sass = require("gulp-sass");
 const sourcemaps = require("gulp-sourcemaps");
 const imagemin = require("gulp-imagemin");
+const html = require("gulp-htmlclean");
 const del = require("del");
 const fs = require("fs");
 const Canvas = require("canvas-prebuilt");
@@ -26,7 +27,7 @@ gulp.task("sass", () => {
 
 gulp.task("html", () => {
   return gulp.src("./src/**.html", { base: "./src" })
-    .pipe(clone())
+    .pipe(html())
     .pipe(gulp.dest("./build/"));
 });
 
@@ -47,7 +48,7 @@ gulp.task("maps", cb => {
     if (err) cb(err);
 
     const width = 800;
-    const height = 150;
+    const height = 200;
     const canvas = new Canvas(width, height * (files.length || 1));
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "black";

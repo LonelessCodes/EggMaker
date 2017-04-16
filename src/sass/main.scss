@@ -21,10 +21,18 @@ body{
   padding: 0;
 }
 
-canvas,
-#stage {
+#stage,
+#stage > canvas,
+#create {
   @extend %full;
-}
-canvas {
   position: absolute;
+}
+#create {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > canvas {
+    height: 80%;
+  }
 }
