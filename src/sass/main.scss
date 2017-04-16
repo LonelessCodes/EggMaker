@@ -1,0 +1,30 @@
+@import "variables";
+
+* {
+  box-sizing: border-box;
+}
+
+%full {
+  height: 100%;
+  width: 100%;
+}
+
+html {
+  @extend %full;
+  background: black;
+  overflow: hidden !important;
+}
+
+body{
+  @extend html;
+  margin: 0;
+  padding: 0;
+}
+
+canvas,
+#stage {
+  @extend %full;
+}
+canvas {
+  position: absolute;
+}

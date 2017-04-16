@@ -1,0 +1,4 @@
+{
+  "src": "build/",
+  "build_command": "gulp build"
+}
