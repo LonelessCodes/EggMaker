@@ -6,7 +6,7 @@ export function getLumaPixels(ctx, opt) {
   const threshold = Array.isArray(opt.threshold) ? opt.threshold : null;
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  let rgba = imageData.data;
+  const rgba = imageData.data;
 
   for (let i = 0; i < canvas.width * canvas.height; i++) {
     const r = rgba[i * 4 + 0];
@@ -23,11 +23,8 @@ export function getLumaPixels(ctx, opt) {
 
     // replace RGBA
     rgba[i] = L;
+    rgba[i + 1] = L;
+    rgba[i + 2] = L;
   }
-
-  // keep memory low, only return grayscale data. Delete rgba data from RAM
-  const grayscale = rgba.slice(0, imageData.length / 4);
-  rgba = null;
-  delete imageData.data;
-  return grayscale;
+  return imageData;
 }

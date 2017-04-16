@@ -4,7 +4,7 @@
 
 ![Egg Maker Image](https://github.com/LonelessCodes/EggMaker/raw/master/images/screenshot.png "Egg Maker Screenshot")
 
-**Big** thanks to [Daniel Shiffman](http://shiffman.net) for his tutorial on inverse kinematics and also to [Matt DesLauriers](http://mattdesl.svbtle.com) for his [example](http://color-wander.surge.sh) on generative art in NodeJS.
+**Big** thanks to [Matt DesLauriers](http://mattdesl.svbtle.com) for his [example](http://color-wander.surge.sh) on generative art in NodeJS.
 
 ---
 
@@ -24,6 +24,15 @@ A random seed is generated, based on that seed the height map, max brush size, n
 In my Egg Maker here I kinda use the same techniques, just that the height map is generated from pieces/stripes of post-modern architecture and common easter egg patterns
 ![Graph showing how height maps are made in Egg Maker](https://github.com/LonelessCodes/EggMaker/raw/master/images/heightmap.png "How the height maps are made")
 
-```javascript
+---
 
-```
+### Things learned
+
+Start small. My actual intentions were to create an app in which you can paint easter eggs, save them, look at the eggs from other people, take pictures of your eggs and share them.
+This was quickly `nope`. Not in one weekend.
+
+I then started to lower my expectations, which at this time still were pretty big. I actually wanted to use [PIXI.JS](http://pixijs.com) and [Matter.js](http://matterjs.com) for the user to kind of play around. Like, with the egg, in two dimensions. Throwing it around and stuff. This lasted till the end when I noticed the Webpack bundle was dramatically big.
+
+So what happened in the end is just a [Color Wander](http://color-wander.surge.sh)-like code, that has Views implemented which are not being used. I've also discovered a problem with the seeds: getting the color palette, height map and initial particle values works fine, but calculating the new values for each particle seems to be broken (In the seeding sense, as noted).
+
+Other than that, I'm happy.

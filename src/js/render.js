@@ -1,4 +1,4 @@
-import { lerp } from "./modules/utils";
+import { lerp, newArray } from "./modules/utils";
 import * as clamp from "clamp";
 import * as vec2 from "gl-vec2";
 import * as SimplexNoise from "simplex-noise";
@@ -9,16 +9,15 @@ export function render(opt) {
   if (!opt) throw new TypeError("Argument 'opts' is not of type Object");
   const {
     ctx,
-    random = Math.random,
+    random,
     count = 0,
     palette = ["#fff", "#000"],
     backgroundCtx,
     noiseScalar = [0.00001, 0.0001] } = opt;
 
   const maxRadius = typeof opt.maxRadius === "number" ? opt.maxRadius : 10;
-  const startArea = typeof opt.startArea === "number" ? opt.startArea : 0.5;
   const globalAlpha = typeof opt.globalAlpha === "number" ? opt.globalAlpha : 1;
-
+  
   const simplex = new SimplexNoise(random);
   const canvas = ctx.canvas;
   const width = canvas.width;
@@ -27,9 +26,9 @@ export function render(opt) {
 
   const heightMap = getLumaPixels(backgroundCtx, {
     scale: opt.backgroundScale
-  });
+  }).data;
   let time = 0;
-  const particles = (new Array(count)).map(() => resetParticle());
+  const particles = newArray(count).map(() => resetParticle());
 
   return {
     clear,
@@ -37,6 +36,7 @@ export function render(opt) {
   };
 
   function clear() {
+    ctx.globalAlpha = 1;
     ctx.fillStyle = palette[0];
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
@@ -50,7 +50,7 @@ export function render(opt) {
       const fx = clamp(Math.round(x), 0, canvas.width - 1);
       const fy = clamp(Math.round(y), 0, canvas.height - 1);
       const heightIndex = fx + (fy * canvas.width);
-      const heightValue = heightMap[heightIndex] / 255;
+      const heightValue = heightMap[heightIndex * 4] / 255;
 
       const pS = lerp(noiseScalar[0], noiseScalar[1], heightValue);
       const n = simplex.noise3D(fx * pS, fy * pS, p.duration + time);
@@ -72,7 +72,6 @@ export function render(opt) {
       ctx.lineJoin = opt.lineStyle || "square";
       ctx.strokeStyle = p.color;
 
-      // ctx.strokeStyle = colorStyle(rgb.map(x => x * 255));
       ctx.globalAlpha = globalAlpha;
       ctx.stroke();
 
@@ -85,11 +84,17 @@ export function render(opt) {
 
   function resetParticle(p) {
     p = p || {};
-    const scale = Math.min(width, height) / 2;
-    p.position = randomSphere([], random(0, scale * startArea));
+    p.position = randomSphere([], random(0, height / 2));
     p.position[0] += width / 2;
     p.position[1] += height / 2;
-    p.radius = random(0.01, maxRadius);
+    let hei = heightMap[p.position[0] + p.position[1]*width*4];
+    while(random(0, hei / 255) < 0.1) {
+      p.position = randomSphere([], random(0, height / 2));
+      p.position[0] += width / 2;
+      p.position[1] += height / 2;
+      hei = heightMap[p.position[0] + p.position[1]*width*4];
+    }
+    p.radius = random(1, maxRadius);
     p.duration = random(1, 500);
     p.time = random(0, p.duration);
     p.velocity = [random(-1, 1), random(-1, 1)];
@@ -105,8 +110,8 @@ export function render(opt) {
   function randomSphere(out, scale) {
     scale = scale || 1.0;
     const r = random() * 2.0 * Math.PI;
-    out[0] = Math.cos(r) * scale;
-    out[1] = Math.sin(r) * scale;
+    out[0] = Math.round(Math.cos(r) * scale);
+    out[1] = Math.round(Math.sin(r) * scale);
     return out;
   }
 }
