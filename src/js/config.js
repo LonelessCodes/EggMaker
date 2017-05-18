@@ -28,7 +28,7 @@ export class Config {
       interval: random(0.001, 0.01),
       count: Math.floor(random(50, 500)),
       steps: Math.floor(random(300, 2000)),
-      endlessBrowser: false, // Whether to endlessly step in browser
+      endlessBrowser: true, // Whether to endlessly step in browser
       // endlessBrowser: true is pretty cool too
 
       // background image that drives the algorithm
